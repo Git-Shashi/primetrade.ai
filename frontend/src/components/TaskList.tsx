@@ -133,7 +133,7 @@ export function TaskList({ tasks, onTaskUpdated }: TaskListProps) {
         <EditTaskDialog
           task={editingTask}
           open={!!editingTask}
-          onOpenChange={(open) => !open && setEditingTask(null)}
+          onOpenChange={(open: boolean) => !open && setEditingTask(null)}
           onTaskUpdated={onTaskUpdated}
         />
       )}
