@@ -1,30 +1,28 @@
-# PrimeTrade - Backend Developer Assignment
+# PrimeTrade - Task Management API
 
-A production-grade REST API with authentication, role-based access control, and task management built with Node.js, Express, MongoDB, and JWT.
+A REST API with authentication, role-based access, and task management. Built with Node.js, Express, MongoDB, and JWT.
 
-## 🚀 Features
+## Features
 
-### Backend (Primary Focus)
-- ✅ User registration & login with JWT authentication
-- ✅ Role-based access control (user vs admin)
-- ✅ CRUD APIs for tasks with owner association
-- ✅ API versioning (`/api/v1`)
-- ✅ Input validation with Zod
-- ✅ Custom error handling with extended Error classes
-- ✅ MongoDB with Mongoose ODM
-- ✅ Password hashing with bcryptjs
-- ✅ Security middleware (Helmet, CORS, rate limiting)
-- ✅ Request logging with Morgan
-- ✅ Microservices-style architecture (services, controllers, models)
+### Backend
+- User registration & login with JWT
+- Role-based access (user/admin)
+- Task CRUD operations
+- API versioning (`/api/v1`)
+- Input validation with Zod
+- Error handling
+- Password hashing with bcryptjs
+- Security middleware (Helmet, CORS, rate limiting)
+- Request logging
 
-### Frontend (Supportive)
-- ✅ Next.js 14 with App Router
-- ✅ TailwindCSS + shadcn/ui components
-- ✅ User registration & login pages
-- ✅ Protected dashboard with JWT
-- ✅ Task CRUD operations UI
-- ✅ Toast notifications for feedback
-- ✅ Responsive design
+### Frontend
+- Next.js 14 with App Router
+- TailwindCSS + shadcn/ui
+- Login & registration pages
+- Protected dashboard
+- Task management UI
+- Toast notifications
+- Responsive design
 
 ## 📁 Project Structure
 
@@ -54,7 +52,7 @@ primetrade/
     └── .env.local
 ```
 
-## 🛠️ Technology Stack
+## Tech Stack
 
 ### Backend
 - **Runtime:** Node.js (ES Modules)
@@ -71,7 +69,7 @@ primetrade/
 - **HTTP Client:** Axios
 - **Icons:** Lucide React
 
-## 📦 Installation & Setup
+## Installation
 
 ### Prerequisites
 - Node.js 18+ and npm
@@ -154,7 +152,7 @@ npm start
 
 Frontend will run on `http://localhost:3000`
 
-## 🔌 API Endpoints
+## API Endpoints
 
 ### Authentication (`/api/v1/auth`)
 
@@ -177,7 +175,7 @@ Frontend will run on `http://localhost:3000`
 | PUT | `/tasks/:id` | Update task | Yes (owner/admin) |
 | DELETE | `/tasks/:id` | Delete task | Yes (owner/admin) |
 
-## 📝 API Request Examples
+## Example Requests
 
 ### Register User
 ```bash
@@ -219,18 +217,18 @@ curl -X GET http://localhost:5000/api/v1/tasks \
   -H "Authorization: Bearer YOUR_JWT_TOKEN"
 ```
 
-## 🔒 Security Features
+## Security
 
-1. **Password Hashing:** bcryptjs with salt rounds of 12
-2. **JWT Authentication:** Secure token-based auth with configurable expiry
-3. **Input Validation:** Zod schemas for all inputs
-4. **Rate Limiting:** 100 requests per 15 minutes per IP
-5. **CORS:** Configured for frontend origin
-6. **Helmet:** Security headers
-7. **Error Handling:** Custom error classes with proper status codes
-8. **MongoDB Injection Protection:** Mongoose schema validation
+- Password hashing with bcryptjs (12 rounds)
+- JWT authentication with configurable expiry
+- Input validation using Zod schemas
+- Rate limiting (100 req/15min per IP)
+- CORS configured for frontend
+- Helmet security headers
+- Custom error handling
+- Mongoose validation to prevent injection
 
-## 📊 Database Schema
+## Database Schema
 
 ### User Model
 ```javascript
@@ -258,7 +256,7 @@ curl -X GET http://localhost:5000/api/v1/tasks \
 }
 ```
 
-## 🎯 Role-Based Access Control
+## Role-Based Access
 
 - **User Role:**
   - Can create tasks
@@ -270,106 +268,50 @@ curl -X GET http://localhost:5000/api/v1/tasks \
   - Can update/delete any task
   - Has full system access
 
-## 🚀 Scalability Notes
+## Scalability
 
-### Current Architecture
-- **Microservices Pattern:** Separated concerns (controllers, services, models)
-- **Stateless Authentication:** JWT enables horizontal scaling
-- **Database Indexing:** Indexes on frequently queried fields
-- **Connection Pooling:** MongoDB connection pool (max 10)
+### Current Setup
+- Separated concerns (controllers, services, models)
+- Stateless JWT authentication for horizontal scaling
+- Database indexes on frequently queried fields
+- MongoDB connection pool (max 10)
 
-### Recommendations for Production Scale
+### For Production
 
-1. **Caching Layer:**
-   ```javascript
-   // Add Redis for session/query caching
-   - Cache frequently accessed tasks
-   - Cache user sessions
-   - Implement cache invalidation strategy
-   ```
+Some things to consider when scaling:
 
-2. **Load Balancing:**
-   ```nginx
-   upstream backend {
-     server backend1:5000;
-     server backend2:5000;
-     server backend3:5000;
-   }
-   ```
+- Add Redis for caching frequently accessed data
+- Use load balancer to distribute traffic
+- Set up MongoDB replica sets for high availability
+- Implement API gateway for centralized auth and rate limiting
+- Add monitoring (ELK stack, APM tools)
+- Containerize with Docker
+- Use message queue (RabbitMQ/Kafka) for async tasks
 
-3. **Database Optimization:**
-   - Implement MongoDB replica sets for high availability
-   - Add read replicas for read-heavy operations
-   - Use MongoDB sharding for large datasets
-   - Add compound indexes for complex queries
+## Testing
 
-4. **API Gateway:**
-   - Implement API gateway (Kong, AWS API Gateway)
-   - Centralized authentication
-   - Rate limiting per user/endpoint
-   - Request/response transformation
-
-5. **Monitoring & Logging:**
-   - Implement ELK stack (Elasticsearch, Logstash, Kibana)
-   - Add APM tools (New Relic, Datadog)
-   - Set up health check endpoints
-   - Implement distributed tracing
-
-6. **Containerization:**
-   ```dockerfile
-   # Dockerfile example
-   FROM node:18-alpine
-   WORKDIR /app
-   COPY package*.json ./
-   RUN npm ci --only=production
-   COPY . .
-   EXPOSE 5000
-   CMD ["node", "src/server.js"]
-   ```
-
-7. **Message Queue:**
-   - Add RabbitMQ/Kafka for async operations
-   - Background job processing
-   - Email notifications
-   - Task assignment notifications
-
-## 🧪 Testing
-
-To add tests, create a `tests/` directory and use Jest:
+Tests can be added using Jest and Supertest:
 
 ```bash
 npm install --save-dev jest supertest
 ```
 
-Example test structure:
-```javascript
-// tests/auth.test.js
-describe('Auth API', () => {
-  test('should register new user', async () => {
-    // Test implementation
-  });
-});
-```
+## Docker Deployment
 
-## 🐳 Docker Deployment (Optional)
+Basic `docker-compose.yml` setup:
 
 ```yaml
-# docker-compose.yml
 version: '3.8'
 services:
   mongodb:
     image: mongo:7
     ports:
       - "27017:27017"
-    volumes:
-      - mongo-data:/data/db
   
   backend:
     build: ./backend
     ports:
       - "5000:5000"
-    environment:
-      - MONGODB_URI=mongodb://mongodb:27017/primetrade
     depends_on:
       - mongodb
   
@@ -377,14 +319,9 @@ services:
     build: ./frontend
     ports:
       - "3000:3000"
-    depends_on:
-      - backend
-
-volumes:
-  mongo-data:
 ```
 
-## 📄 Environment Variables
+## Environment Variables
 
 ### Backend `.env`
 ```env
@@ -398,24 +335,10 @@ JWT_REFRESH_EXPIRE=30d
 CLIENT_URL=http://localhost:3000
 ```
 
-## 🤝 Contributing
+## Contributing
 
-This is an assignment project. For production use:
-1. Add comprehensive test coverage
-2. Implement CI/CD pipeline
-3. Add API documentation (Swagger/OpenAPI)
-4. Implement proper logging and monitoring
-5. Add Docker support
-6. Implement refresh token rotation
+Feel free to open issues or submit PRs.
 
-## 📝 License
+## License
 
 MIT
-
-## 👨‍💻 Author
-
-Built for Backend Developer Internship Assignment
-
----
-
-**Note:** This is a demonstration project showcasing production-grade coding practices, microservices architecture, security best practices, and scalability considerations.

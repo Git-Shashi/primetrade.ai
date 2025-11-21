@@ -6,7 +6,6 @@ export const errorHandler = (err, req, res, next) => {
   error.message = err.message;
   error.statusCode = err.statusCode || 500;
 
-  // Log error for debugging
   logger.error('Error:', {
     message: err.message,
     stack: err.stack,

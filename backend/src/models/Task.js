@@ -49,7 +49,6 @@ const taskSchema = new mongoose.Schema(
   }
 );
 
-// Indexes for better query performance
 taskSchema.index({ owner: 1, status: 1 });
 taskSchema.index({ createdAt: -1 });
 
