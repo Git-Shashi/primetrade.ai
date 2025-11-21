@@ -3,10 +3,18 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { Eye, EyeOff, ListTodo } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/components/ui/use-toast';
 
@@ -14,7 +22,9 @@ export default function RegisterPage() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [role, setRole] = useState<'user' | 'admin'>('user');
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const { register } = useAuth();
   const router = useRouter();
   const { toast } = useToast();
@@ -24,7 +34,7 @@ export default function RegisterPage() {
     setLoading(true);
 
     try {
-      await register(name, email, password);
+      await register(name, email, password, role);
       toast({
         title: 'Success',
         description: 'Registration successful!',
@@ -45,7 +55,10 @@ export default function RegisterPage() {
     <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
       <Card className="w-full max-w-md">
         <CardHeader className="space-y-1">
-          <CardTitle className="text-2xl font-bold">Create Account</CardTitle>
+          <div className="flex items-center gap-2 mb-2">
+            <ListTodo className="h-6 w-6 text-primary" />
+            <CardTitle className="text-2xl font-bold">Todo App</CardTitle>
+          </div>
           <CardDescription>
             Enter your information to create an account
           </CardDescription>
@@ -76,15 +89,37 @@ export default function RegisterPage() {
             </div>
             <div className="space-y-2">
               <Label htmlFor="password">Password</Label>
-              <Input
-                id="password"
-                type="password"
-                placeholder="••••••••"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                minLength={6}
-              />
+              <div className="relative">
+                <Input
+                  id="password"
+                  type={showPassword ? "text" : "password"}
+                  placeholder="••••••••"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  minLength={6}
+                  className="pr-10"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                >
+                  {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                </button>
+              </div>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="role">Register As</Label>
+              <Select value={role} onValueChange={(value) => setRole(value as 'user' | 'admin')}>
+                <SelectTrigger id="role">
+                  <SelectValue placeholder="Select role" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="user">User</SelectItem>
+                  <SelectItem value="admin">Admin</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
           </CardContent>
           <CardFooter className="flex flex-col space-y-4">

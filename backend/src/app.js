@@ -5,18 +5,23 @@ import morgan from 'morgan';
 import rateLimit from 'express-rate-limit';
 import authRoutes from './routes/authRoutes.js';
 import taskRoutes from './routes/taskRoutes.js';
+import adminRoutes from './routes/adminRoutes.js';
 import { errorHandler, notFound } from './middleware/errorHandler.js';
 
 const app = express();
 
 // Security middleware
 app.use(helmet());
-app.use(
-  cors({
-    origin: process.env.CLIENT_URL || 'http://localhost:3000',
-    credentials: true,
-  })
-);
+
+// CORS configuration - must be before routes
+const corsOptions = {
+  origin: process.env.CLIENT_URL || 'http://localhost:3000',
+  credentials: true,
+  optionsSuccessStatus: 200,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+};
+app.use(cors(corsOptions));
 
 // Rate limiting
 const limiter = rateLimit({
@@ -47,6 +52,7 @@ app.get('/health', (req, res) => {
 // API routes - v1
 app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/tasks', taskRoutes);
+app.use('/api/v1/admin', adminRoutes);
 
 // 404 handler
 app.use(notFound);

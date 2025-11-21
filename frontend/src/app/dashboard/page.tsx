@@ -7,7 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { useAuth } from '@/contexts/AuthContext';
 import { TaskList } from '@/components/TaskList';
 import { CreateTaskDialog } from '@/components/CreateTaskDialog';
-import { LogOut, Plus } from 'lucide-react';
+import { LogOut, Plus, ListTodo, Shield } from 'lucide-react';
 import api from '@/lib/api';
 import { useToast } from '@/components/ui/use-toast';
 
@@ -52,8 +52,12 @@ export default function DashboardPage() {
     try {
       const response = await api.get('/tasks/stats');
       setStats(response.data.data.stats);
-    } catch (error) {
-      console.error('Failed to fetch stats', error);
+    } catch (error: any) {
+      toast({
+        title: 'Error',
+        description: 'Failed to fetch statistics',
+        variant: 'destructive',
+      });
     }
   };
 
@@ -85,14 +89,25 @@ export default function DashboardPage() {
     <div className="min-h-screen bg-gray-50">
       <header className="bg-white shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
-          <div>
-            <h1 className="text-2xl font-bold text-gray-900">PrimeTrade Dashboard</h1>
-            <p className="text-sm text-gray-600">Welcome, {user.name}</p>
+          <div className="flex items-center gap-3">
+            <ListTodo className="h-8 w-8 text-primary" />
+            <div>
+              <h1 className="text-2xl font-bold text-gray-900">Todo App</h1>
+              <p className="text-sm text-gray-600">Welcome, {user.name}</p>
+            </div>
           </div>
-          <Button variant="outline" onClick={handleLogout}>
-            <LogOut className="mr-2 h-4 w-4" />
-            Logout
-          </Button>
+          <div className="flex items-center gap-2">
+            {user.role === 'admin' && (
+              <Button variant="outline" onClick={() => router.push('/admin')}>
+                <Shield className="mr-2 h-4 w-4" />
+                Admin Panel
+              </Button>
+            )}
+            <Button variant="outline" onClick={handleLogout}>
+              <LogOut className="mr-2 h-4 w-4" />
+              Logout
+            </Button>
+          </div>
         </div>
       </header>
 

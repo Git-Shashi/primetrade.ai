@@ -63,12 +63,4 @@ userSchema.methods.comparePassword = async function (candidatePassword) {
   return await bcrypt.compare(candidatePassword, this.password);
 };
 
-// Hide password in queries by default
-userSchema.pre(/^find/, function (next) {
-  if (!this.options.includePassword) {
-    this.select('-password');
-  }
-  next();
-});
-
 export const User = mongoose.model('User', userSchema);
